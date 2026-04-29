@@ -35,3 +35,15 @@ jobs:
         port: 22
         source: "target/*.jar"
         target: "/home/ubuntu/app/"
+
+    # Step 5: SSH into the EC2 instance and run the application
+    - name: Run application on EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: |
+          pkill -f 'java -jar' || true
+          nohup java -jar /home/ubuntu/app/*.jar > app.log 2>&1 &
