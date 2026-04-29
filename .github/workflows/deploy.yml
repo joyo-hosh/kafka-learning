@@ -52,7 +52,7 @@ jobs:
           PID=$(pgrep -f "java -jar /home/ubuntu/app/app.jar")
           if [ -n "$PID" ]; then
             echo "Killing existing application with PID: $PID"
-            kill $PID
+            kill -15 $PID || true
             sleep 5
           fi
           nohup java -jar /home/ubuntu/app/app.jar > /home/ubuntu/app/app.log 2>&1 &
