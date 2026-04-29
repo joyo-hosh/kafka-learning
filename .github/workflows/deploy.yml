@@ -52,15 +52,22 @@ jobs:
             echo "Error: No JAR file found"
             exit 1
           fi
+          
           # Remove old app.jar if it exists
           rm -f app.jar
           cp "$latestJar" app.jar
-          PID=$(pgrep -f "java -jar /home/ubuntu/app/app.jar")
+          
+          # Kill existing application and wait
+          PID=$(pgrep -f "java -jar /home/ubuntu/app/app.jar") || true
           if [ -n "$PID" ]; then
             echo "Killing existing application with PID: $PID"
             kill -15 $PID || true
-            sleep 5
+            sleep 3
+            # Force kill if still running
+            kill -9 $PID 2>/dev/null || true
           fi
+          
+          sleep 2
           nohup java -jar /home/ubuntu/app/app.jar > /home/ubuntu/app/app.log 2>&1 &
           sleep 5
           pgrep -f app.jar && echo "Application started successfully" || echo "Failed to start application"
