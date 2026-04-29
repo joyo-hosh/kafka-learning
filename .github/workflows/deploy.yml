@@ -46,8 +46,14 @@ jobs:
         port: 22
         script: |
           cd /home/ubuntu/app
-          latestJar=$(find . -name "*.jar" | head -n 1)
-          echo "Found JAR: $latestJar" 
+          latestJar=$(find . -name "*.jar" -not -name "app.jar" | head -n 1)
+          echo "Found JAR: $latestJar"
+          if [ -z "$latestJar" ]; then
+            echo "Error: No JAR file found"
+            exit 1
+          fi
+          # Remove old app.jar if it exists
+          rm -f app.jar
           cp "$latestJar" app.jar
           PID=$(pgrep -f "java -jar /home/ubuntu/app/app.jar")
           if [ -n "$PID" ]; then
@@ -58,4 +64,3 @@ jobs:
           nohup java -jar /home/ubuntu/app/app.jar > /home/ubuntu/app/app.log 2>&1 &
           sleep 5
           pgrep -f app.jar && echo "Application started successfully" || echo "Failed to start application"
-
