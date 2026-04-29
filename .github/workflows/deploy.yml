@@ -49,7 +49,6 @@ jobs:
           latestJar=$(find . -name "*.jar" | head -n 1)
           echo "Found JAR: $latestJar" 
           cp "$latestJar" app.jar
-#          pgrep -f app.jar && pkill -f app.jar || true
           PID=$(pgrep -f "java -jar /home/ubuntu/app/app.jar")
           if [ -n "$PID" ]; then
             echo "Killing existing application with PID: $PID"
