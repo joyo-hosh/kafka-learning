@@ -25,7 +25,11 @@ jobs:
     - name: Build with Maven
       run: mvn clean package -DskipTests
 
-    # Step 4: Deploy the built JAR file to EC2 instance
+    # Step 4: Rename the JAR file to app.jar
+    - name: Rename Jar
+      run: cp target/*.jar target/app.jar
+
+    # Step 5: Deploy the built JAR file to EC2 instance
     - name: Deploy to EC2
       uses: appleboy/scp-action@master
       with:
@@ -33,7 +37,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
-        source: "target/*.jar"
+        source: "target/app.jar"
         target: "/home/ubuntu/app/"
 
     # Step 5: SSH into the EC2 instance and run the application
