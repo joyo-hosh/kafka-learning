@@ -53,10 +53,6 @@ jobs:
             exit 1
           fi
           
-          # Remove old app.jar if it exists
-          rm -f app.jar
-          cp "$latestJar" app.jar
-          
           # Kill existing application and wait
           PID=$(pgrep -f "java -jar /home/ubuntu/app/app.jar") || true
           if [ -n "$PID" ]; then
@@ -67,6 +63,10 @@ jobs:
             kill -9 $PID 2>/dev/null || true
           fi
           
+          # Remove old app.jar if it exists
+          rm -f app.jar
+          cp "$latestJar" app.jar
+
           sleep 2
           nohup java -jar /home/ubuntu/app/app.jar > /home/ubuntu/app/app.log 2>&1 &
           sleep 5
