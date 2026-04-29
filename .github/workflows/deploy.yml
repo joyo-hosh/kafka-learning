@@ -45,7 +45,11 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          pgrep -f /home/ubuntu/app/*.jar pkill -f /home/ubuntu/app/*.jar || true
-          nohup java -jar /home/ubuntu/app/*.jar > app.log 2>&1 &
-          sleep 10
-          ps -ef | grep java
+          cd /home/ubuntu/app
+          latestJar=$(ls -t *.jar | head -n 1)
+          cp "$latestJar" app.jar
+          pgrep -f app.jar && pkill -f app.jar || true
+          nohup java -jar /home/ubuntu/app/app.jar > /home/ubuntu/app/app.log 2>&1 &
+          sleep 5
+          ps -ef | grep app.jar
+
