@@ -46,7 +46,8 @@ jobs:
         port: 22
         script: |
           cd /home/ubuntu/app
-          latestJar=$(ls -t *.jar | head -n 1)
+          latestJar=$(find . -name "*.jar" | head -n 1)
+          echo "Found JAR: $latestJar" 
           cp "$latestJar" app.jar
           pgrep -f app.jar && pkill -f app.jar || true
           nohup java -jar /home/ubuntu/app/app.jar > /home/ubuntu/app/app.log 2>&1 &
